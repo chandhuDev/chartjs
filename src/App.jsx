@@ -49,20 +49,24 @@ import { Chart as ChartJS,
   
 
 function App() {
-  const [inputData, setInputData] = useState([])
+  const [inputData, setInputData] = useState()
+  const [inputValue, setInputValue] = useState([])
   const [sortData,setSortData]=useState(chartData)
 
   function sort(e){
-    const sortedData=inputData.sort(function (a,b){
+    const sortedData=inputValue.sort(function (a,b){
       return a-b
      })
     setData(sortedData)
+    setInputValue([])
   }
   
  function submitData(e){
      if(e.key==="Enter"){
-       setData(inputData)
+       setData(inputValue)
+       setInputData('')
       }
+      
   }
 
   function setData(Data){
@@ -78,8 +82,11 @@ function App() {
   }
 
   function handleChange(e){
-   setInputData(e.target.value.split(','))
+    setInputData(e.target.value)
+   setInputValue([...inputValue,e.target.value.split(',')])
   }
+
+ 
 
    return (
     <>
@@ -93,7 +100,7 @@ function App() {
       onChange={handleChange}
       onKeyUp={submitData}
       />
-      <button onClick={sort} className='transition px-4 py-2 rounded-lg ease-in-out delay-50 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300'>Enter</button>
+      <button onClick={sort} className='transition px-4 py-2 rounded-lg ease-in-out delay-50 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300'>Sort</button>
       </div>  
       <div className='w-3/5 h-3/5 rounded-md bg-white mt-14 shadow-xl cursor-pointer'>
       <Bar options={options} data={sortData} redraw={true}/>;
