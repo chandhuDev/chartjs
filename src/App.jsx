@@ -1,25 +1,87 @@
-import { useState } from 'react'
-import Chart from './Chart'
+import {  useState} from 'react'
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,} from "chart.js";
+
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Legend,
+    Tooltip
+  );
+
+
+
+  export const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart',
+      },
+    },
+  };
+
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: "My Data",
+        data: [],
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  }
+  
 
 function App() {
   const [inputData, setInputData] = useState([])
-  const [sortData,setSortData]=useState([])
+  const [sortData,setSortData]=useState(chartData)
 
-  function submitData(){
-     const sortedData=inputData.sort(function (a,b){
+  function sort(e){
+    const sortedData=inputData.sort(function (a,b){
       return a-b
      })
-     setInputData([])
-     setSortData(sortedData)
-     
+    setData(sortedData)
+  }
+  
+ function submitData(e){
+     if(e.key==="Enter"){
+       setData(inputData)
+      }
+  }
+
+  function setData(Data){
+     setSortData({
+      ...chartData,
+      datasets: [
+        {
+          ...chartData.datasets[0],
+          data: Data
+        }
+      ]
+    });
   }
 
   function handleChange(e){
-    setInputData(e.target.value.split(','))
-    
+   setInputData(e.target.value.split(','))
   }
 
-  return (
+   return (
     <>
       <div className='flex w-full h-screen  flex-col justify-start   items-center'>
       <div className='flex flex-row w-2/5 gap-x-5 mt-12 justify-center'>
@@ -29,11 +91,12 @@ function App() {
       placeholder="Enter values"
       value={inputData}
       onChange={handleChange}
+      onKeyUp={submitData}
       />
-      <button onClick={submitData} className='transition px-4 py-2 rounded-lg ease-in-out delay-50 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300'>Enter</button>
+      <button onClick={sort} className='transition px-4 py-2 rounded-lg ease-in-out delay-50 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300'>Enter</button>
       </div>  
       <div className='w-3/5 h-3/5 rounded-md bg-white mt-14 shadow-xl cursor-pointer'>
-        <Chart Data={sortData} />
+      <Bar options={options} data={sortData} redraw={true}/>;
       </div>
       </div>
     </>
