@@ -32,7 +32,8 @@ import { Chart as ChartJS,
     },
   };
 
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  let count=0
+  const labels = [];
 
   const chartData = {
     labels: labels,
@@ -52,6 +53,7 @@ function App() {
   const [inputData, setInputData] = useState()
   const [inputValue, setInputValue] = useState([])
   const [sortData,setSortData]=useState(chartData)
+  const [labelData,setLabelData]=useState([])
 
   function sort(e){
     const sortedData=inputValue.sort(function (a,b){
@@ -65,6 +67,7 @@ function App() {
      if(e.key==="Enter"){
        setData(inputValue)
        setInputData('')
+       
       }
       
   }
@@ -72,6 +75,7 @@ function App() {
   function setData(Data){
      setSortData({
       ...chartData,
+       labels:labelData,
       datasets: [
         {
           ...chartData.datasets[0],
@@ -81,9 +85,28 @@ function App() {
     });
   }
 
+
+  function generateArray(limit) {
+    var result = [];
+    for (var i = 0; i < limit; i++) {
+      result.push(i);
+    }
+    return result;
+  }
+
+
+
   function handleChange(e){
     setInputData(e.target.value)
-   setInputValue([...inputValue,e.target.value.split(',')])
+    
+    if(e.target.value.split(',').length>1){
+      setInputValue(e.target.value.split(','))
+      setLabelData(generateArray(e.target.value.split(',').length))
+    }else{
+      setInputValue([...inputValue,e.target.value.split(',')])
+      setLabelData([...labelData,count++])
+    }
+    
   }
 
  
